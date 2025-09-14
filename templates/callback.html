@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen pt-32 pb-20">
+    <div class="max-w-md mx-auto px-6">
+        
+        <!-- Processing State -->
+        <div id="processingState" class="text-center">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="w-16 h-16 mx-auto mb-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <h2 class="text-xl font-semibold text-gray-900 mb-2">Verifying Payment</h2>
+                <p class="text-gray-600">Please wait...</p>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div id="successState" class="text-center hidden">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold text-gray-900 mb-2">Payment Successful</h2>
+                <p class="text-gray-600 mb-4">Your payment has been processed successfully.</p>
+                <div class="text-sm text-gray-500 mb-6">
+                    <p>Reference: <span id="successRef" class="font-mono"></span></p>
+                </div>
+                <a href="/dashboard" class="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Continue to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="text-center hidden">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold text-gray-900 mb-2">Payment Failed</h2>
+                <p class="text-gray-600 mb-4" id="errorMessage">Payment could not be verified.</p>
+                <div class="text-sm text-gray-500 mb-6">
+                    <p>Reference: <span id="errorRef" class="font-mono"></span></p>
+                </div>
+                <div class="space-y-3">
+                    <button onclick="retryVerification()" class="w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Try Again
+                    </button>
+                    <a href="/dashboard" class="block text-center text-gray-600 hover:text-gray-800">
+                        Go to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// Get URL parameters
+function getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+        trxref: urlParams.get('trxref'),
+        reference: urlParams.get('reference')
+    };
+}
+
+// Show state
+function showState(state) {
+    document.getElementById('processingState').classList.add('hidden');
+    document.getElementById('successState').classList.add('hidden');
+    document.getElementById('errorState').classList.add('hidden');
+    document.getElementById(state + 'State').classList.remove('hidden');
+}
+
+// Verify payment
+async function verifyPayment() {
+    const params = getUrlParams();
+    
+    if (!params.trxref && !params.reference) {
+        document.getElementById('errorMessage').textContent = 'No payment reference found.';
+        document.getElementById('errorRef').textContent = 'N/A';
+        showState('error');
+        return;
+    }
+
+    try {
+        const response = await fetch('/payment/verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+                trxref: params.trxref,
+                reference: params.reference
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            document.getElementById('successRef').textContent = params.reference || params.trxref;
+            showState('success');
+        } else {
+            document.getElementById('errorMessage').textContent = data.message || 'Payment verification failed.';
+            document.getElementById('errorRef').textContent = params.reference || params.trxref;
+            showState('error');
+        }
+    } catch (error) {
+        document.getElementById('errorMessage').textContent = 'Network error. Please try again.';
+        document.getElementById('errorRef').textContent = params.reference || params.trxref;
+        showState('error');
+    }
+}
+
+// Retry verification
+function retryVerification() {
+    showState('processing');
+    setTimeout(verifyPayment, 1000);
+}
+
+// Get CSRF cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Start verification when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(verifyPayment, 1500);
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .country-btn.active {
+        border-color: #2563eb;
+        background-color: #eff6ff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+    }
+
+    .service-dropdown {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pt-20">
+    <div class="max-w-7xl mx-auto my-8 px-6 pb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass-surface rounded-2xl p-8 mb-8">
+
+                    <!-- Country Select -->
+                    <label for="country" class="block mb-2 text-sm font-medium text-gray-700">Choose Country</label>
+                    <select id="country" name="country"
+                        class="w-full p-3 rounded-xl border border-gray-200 bg-white/50 hover:bg-white transition-all">
+                        <option id="country-default" value="">-- Select Country --</option>
+                        <option id="country-us" value="us">United States</option>
+                        <option id="country-germany" value="germany">Germany</option>
+                        <option id="country-other" value="other">Others</option>
+                    </select>
+
+                    <!-- Service Dropdowns -->
+                    <div id="service-dropdowns" class="mt-6 space-y-4">
+
+                        <!-- US Service -->
+                        <div class="relative hidden" id="us-service">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Service (US)</label>
+                            <input id="us-service-search" type="text" placeholder="Search service..."
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 mb-2">
+                            <div id="us-service-list"
+                                class="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg service-dropdown hidden">
+                            </div>
+
+                            <!-- US Area Code Dropdown -->
+                            <div class="mt-6 relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">US Area Code</label>
+                                <input id="us-area-code-search" type="text" placeholder="Search area code e.g 201, 202, 225 ..."
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 mb-2">
+                            
+                            </div>
+
+                            <!-- Filters -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Cost (₦)</label>
+                                    <input id="max-cost" type="number" min="0" placeholder="1000" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 
+                focus:ring-blue-500 focus:border-transparent transition-all 
+                bg-white/80 backdrop-blur-sm">
+                                </div>
+                            </div>
+
+                            <!-- Action Button -->
+                            <div class="flex justify-between mt-6">
+                                <button id="rent-us-number" class="premium-button">Rent</button>
+                            </div>
+                        </div>
+
+
+                        <!-- Germany Service -->
+                        <div class="relative hidden" id="german-service">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Service (Germany)</label>
+                            <input id="german-service-search" type="text" placeholder="Search service..."
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 mb-2">
+                            <div id="german-service-list"
+                                class="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg service-dropdown hidden">
+                            </div>
+
+                            <!-- Filters -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Cost (₦)</label>
+                                    <input id="max-cost" type="number" min="0" placeholder="1000" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 
+                                        focus:ring-blue-500 focus:border-transparent transition-all 
+                                        bg-white/80 backdrop-blur-sm">
+                                </div>
+                            </div>
+                            <!-- Action Button -->
+                            <div class="flex justify-between mt-6">
+                                <button id="rent-gem-number" onclick="premium-button">Rent</button>
+                            </div>
+                        </div>
+
+                        <!-- Other Countries Service -->
+                        <div class="relative hidden" id="other-service">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Service (Other
+                                Countries)</label>
+                            <input id="other-service-search" type="text" placeholder="Search service..."
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 mb-2">
+                            <div id="other-service-list"
+                                class="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg service-dropdown hidden">
+                            </div>
+
+                            <div class="flex justify-between mt-6">
+                                <button id="rent-oth-number" onclick="premium-button">Rent</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+                <!-- Rentals Table -->
+        <div class="glass-surface rounded-2xl overflow-hidden elegant-hover mt-12">
+            <div class="glass-surface rounded-2xl p-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-2">My recent rentals</h2>
+                    <p class="text-gray-600">Your active and recent number rentals</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-4 px-2 font-semibold">ID</th>
+                                <th class="text-left py-4 px-2 font-semibold">Service</th>
+                                <th class="text-left py-4 px-2 font-semibold">Phone</th>
+                                <th class="text-left py-4 px-2 font-semibold">Price</th>
+                                <th class="text-left py-4 px-2 font-semibold">Code</th>
+                                <th class="text-left py-4 px-2 font-semibold">Date</th>
+                                <th class="text-left py-4 px-2 font-semibold">Expires At</th>
+                                <th class="text-left py-4 px-2 font-semibold">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rented-numbers-table">
+                            {% for order in orders %}
+                            <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                                <td class="py-4 px-2 font-mono text-sm">{{ order.id }}</td>
+                                <td class="py-4 px-2">{{ order.service }}</td>
+                                <td class="py-4 px-2 font-mono">{{ order.phone }}</td>
+                                <td class="py-4 px-2 font-semibold">${{ order.price }}</td>
+                                <td class="py-4 px-2 font-mono">{{ order.code }}</td>
+                                <td class="py-4 px-2 text-gray-600">{{ order.created_at }}</td>
+                                <td class="py-4 px-2 text-gray-600">
+                                    {{ order.expires_at }}
+                                    <a href="#" class="text-blue-600 hover:underline ml-2">Wakeup</a>
+                                    <span class="text-gray-500">(Inactive)</span>
+                                </td>
+                                <td class="py-4 px-2">
+                                    <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View SMS</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="py-6 text-center text-gray-500">No orders found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- View More Button -->
+                <div class="flex justify-center mt-6">
+                    <a href="/orders"
+                        class="px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-xl shadow hover:bg-blue-700 transition-all">
+                        View More
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if orders.has_other_pages %}
+            <div class="px-6 py-4 flex items-center justify-between border-t border-gray-200">
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing <span class="font-medium">{{ orders.start_index }}</span> to
+                            <span class="font-medium">{{ orders.end_index }}</span> of
+                            <span class="font-medium">{{ orders.paginator.count }}</span> orders
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            {% if orders.has_previous %}
+                            <a href="?page={{ orders.previous_page_number }}"
+                                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Previous</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                            {% endif %}
+
+                            {% for i in orders.paginator.page_range %}
+                            {% if orders.number == i %}
+                            <a href="#" aria-current="page"
+                                class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">{{ i }}</a>
+                            {% else %}
+                            <a href="?page={{ i }}"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">{{ i }}</a>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if orders.has_next %}
+                            <a href="?page={{ orders.next_page_number }}"
+                                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Next</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Country selection
+    document.getElementById("country").addEventListener("change", function () {
+        const value = this.value;
+
+        // Hide all first
+        document.getElementById("us-service").classList.add("hidden");
+        document.getElementById("german-service").classList.add("hidden");
+        document.getElementById("other-service").classList.add("hidden");
+
+        if (value === "us") {
+            document.getElementById("us-service").classList.remove("hidden");
+            populateUSServices();
+            getUSAreaCode(); 
+        }
+        if (value === "germany") {
+            document.getElementById("german-service").classList.remove("hidden");
+            populateGermanServices();
+        }
+        if (value === "other") {
+            document.getElementById("other-service").classList.remove("hidden");
+            populateOtherServices();
+        }
+    });
+
+    // --- US Service Search ---
+    document.getElementById("us-service-search").addEventListener("input", function () {
+        const val = this.value.toLowerCase();
+        const listEl = document.getElementById("us-service-list");
+        listEl.querySelectorAll("button").forEach(btn => {
+            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
+        });
+        listEl.classList.remove("hidden");
+    });
+
+    document.getElementById("us-area-code-search").addEventListener("input", function () {
+        const val = this.value.toLowerCase();
+        const listEl = document.getElementById("us-area-code-list");
+        listEl.querySelectorAll("button").forEach(btn => {
+            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
+        });
+        listEl.classList.remove("hidden");
+    });
+
+    // --- German Service Search ---
+    document.getElementById("german-service-search").addEventListener("input", function () {
+        const val = this.value.toLowerCase();
+        const listEl = document.getElementById("german-service-list");
+        listEl.querySelectorAll("button").forEach(btn => {
+            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
+        });
+        listEl.classList.remove("hidden");
+    });
+
+    // --- Other Service Search ---
+    document.getElementById("other-service-search").addEventListener("input", function () {
+        const val = this.value.toLowerCase();
+        const listEl = document.getElementById("other-service-list");
+        listEl.querySelectorAll("button").forEach(btn => {
+            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
+        });
+        listEl.classList.remove("hidden");
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener("click", function (e) {
+        ["us-service", "german-service", "other-service"].forEach(serviceId => {
+            const container = document.getElementById(serviceId);
+            if (container && !container.contains(e.target)) {
+                const listEl = container.querySelector(".service-dropdown");
+                if (listEl) listEl.classList.add("hidden");
+            }
+        });
+    });
+</script>
+
+<script src="{% static 'js/dynamic.js' %}"></script>
+<script src="{% static 'js/services.js' %}"></script>
+<script src="{% static 'js/us.js' %}"></script>
+<script src="{% static 'js/german.js' %}"></script>
+<script src="{% static 'js/others.js' %}"></script>
+<script src="{% static 'js/rent.js' %}"></script>
+{% endblock %}

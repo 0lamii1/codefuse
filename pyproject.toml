@@ -1,0 +1,16 @@
+[project]
+name = "codefuseapp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "django>=5.2.6",
+    "django-import-export>=4.3.9",
+    "django-unfold>=0.65.0",
+    "djangorestframework>=3.16.1",
+    "orjson>=3.11.3",
+    "pillow>=11.3.0",
+    "python-dotenv>=1.1.1",
+    "whitenoise>=6.10.0",
+]

@@ -1,0 +1,518 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    .country-btn.active {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    }
+    .service-btn.active {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    }
+    .number-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        border-color: #3a84f3;
+    }
+    .tab-btn.active {
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        color: #1a1a1a;
+    }
+    .status-badge.active {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    .status-badge.pending {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    .status-badge.completed {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pt-20">
+    <!-- Header -->
+    <header class="glass-surface border-b border-white/20 mb-8">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 premium-gradient rounded-2xl flex items-center justify-center">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold premium-text">CodeFuse Dashboard</h1>
+                        <p class="text-gray-600">SMS Number Rental Platform</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="trust-badge text-white px-4 py-2 rounded-xl flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span>System Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 pb-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-surface rounded-2xl p-6 elegant-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 mb-2">Total Numbers</p>
+                        <p class="text-3xl font-bold text-gray-900">8,429</p>
+                    </div>
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                        <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-surface rounded-2xl p-6 elegant-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 mb-2">Available Now</p>
+                        <p class="text-3xl font-bold text-green-600">3,247</p>
+                    </div>
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center">
+                        <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-surface rounded-2xl p-6 elegant-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 mb-2">Revenue Today</p>
+                        <p class="text-3xl font-bold text-purple-600">$2,847</p>
+                    </div>
+                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center">
+                        <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-surface rounded-2xl p-6 elegant-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 mb-2">Success Rate</p>
+                        <p class="text-3xl font-bold text-blue-600">98.7%</p>
+                    </div>
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                        <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Country Selection -->
+                <div class="glass-surface rounded-2xl p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                        <h3 class="font-bold text-lg">Select Country</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <button class="country-btn active w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-country="US" onclick="selectCountry('US')">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🇺🇸</span>
+                                <div>
+                                    <div class="font-semibold">United States</div>
+                                    <div class="text-sm text-gray-500">1,247 available • $0.50</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="country-btn w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-country="DE" onclick="selectCountry('DE')">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🇩🇪</span>
+                                <div>
+                                    <div class="font-semibold">Germany</div>
+                                    <div class="text-sm text-gray-500">892 available • $0.45</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="country-btn w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-country="GB" onclick="selectCountry('GB')">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🇬🇧</span>
+                                <div>
+                                    <div class="font-semibold">United Kingdom</div>
+                                    <div class="text-sm text-gray-500">654 available • $0.55</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="country-btn w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-country="OTHER" onclick="selectCountry('OTHER')">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🌍</span>
+                                <div>
+                                    <div class="font-semibold">Other Countries</div>
+                                    <div class="text-sm text-gray-500">2,156 available • Various</div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Selection -->
+                <div class="glass-surface rounded-2xl p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                        <h3 class="font-bold text-lg">Select Service</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <button class="service-btn active w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-service="whatsapp" onclick="selectService('whatsapp')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">WhatsApp</div>
+                                    <div class="text-sm text-gray-500">2,156 available</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="service-btn w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-service="facebook" onclick="selectService('facebook')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">Facebook</div>
+                                    <div class="text-sm text-gray-500">1,834 available</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="service-btn w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-service="instagram" onclick="selectService('instagram')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-pink-500 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">Instagram</div>
+                                    <div class="text-sm text-gray-500">1,672 available</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="service-btn w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-service="telegram" onclick="selectService('telegram')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-400 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">Telegram</div>
+                                    <div class="text-sm text-gray-500">1,245 available</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="service-btn w-full p-4 rounded-xl border border-gray-200 hover:bg-white/50 transition-all duration-300 text-left" data-service="other" onclick="selectService('other')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gray-500 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">Other Services</div>
+                                    <div class="text-sm text-gray-500">543 available</div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Current Selection -->
+                <div class="premium-gradient text-white rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-4">Current Selection</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span>Country:</span>
+                            <span class="flex items-center space-x-2">
+                                <span id="selected-flag">🇺🇸</span>
+                                <span id="selected-country">United States</span>
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Service:</span>
+                            <span id="selected-service">WhatsApp</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Available:</span>
+                            <span id="selected-stock">1,247</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Price:</span>
+                            <span class="font-bold" id="selected-price">$0.50</span>
+                        </div>
+                    </div>
+                    <button class="premium-button w-full mt-6" onclick="rentNumber()">
+                        Rent Number Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- Tab Navigation -->
+                <div class="glass-surface rounded-2xl p-6">
+                    <div class="flex space-x-2 bg-gray-100 rounded-2xl p-2">
+                        <button class="tab-btn active flex-1 py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2" onclick="switchTab('browse')">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <span>Browse Numbers</span>
+                        </button>
+                        <button class="tab-btn flex-1 py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2" onclick="switchTab('results')">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
+                            <span>My Numbers</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Browse Tab Content -->
+                <div id="browse-tab" class="tab-content active">
+                    <div class="glass-surface rounded-2xl p-8">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold mb-2">Available Numbers</h2>
+                            <p class="text-gray-600">Showing <span id="browse-service">WhatsApp</span> numbers in <span id="browse-country">United States</span></p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="numbers-grid">
+                            <!-- Numbers will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Tab Content -->
+                <div id="results-tab" class="tab-content">
+                    <div class="glass-surface rounded-2xl p-8">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold mb-2">My Rented Numbers</h2>
+                            <p class="text-gray-600">Your active and recent number rentals</p>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-4 px-2 font-semibold">Number</th>
+                                        <th class="text-left py-4 px-2 font-semibold">Country</th>
+                                        <th class="text-left py-4 px-2 font-semibold">Service</th>
+                                        <th class="text-left py-4 px-2 font-semibold">Status</th>
+                                        <th class="text-left py-4 px-2 font-semibold">Price</th>
+                                        <th class="text-left py-4 px-2 font-semibold">Expires</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                                        <td class="py-4 px-2 font-mono font-semibold">+1-555-0123</td>
+                                        <td class="py-4 px-2">US</td>
+                                        <td class="py-4 px-2">WhatsApp</td>
+                                        <td class="py-4 px-2">
+                                            <span class="status-badge active px-3 py-1 rounded-lg text-sm font-medium">Active</span>
+                                        </td>
+                                        <td class="py-4 px-2 font-semibold">$0.50</td>
+                                        <td class="py-4 px-2 text-gray-600">2 hours</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                                        <td class="py-4 px-2 font-mono font-semibold">+49-30-12345</td>
+                                        <td class="py-4 px-2">DE</td>
+                                        <td class="py-4 px-2">Facebook</td>
+                                        <td class="py-4 px-2">
+                                            <span class="status-badge pending px-3 py-1 rounded-lg text-sm font-medium">Pending</span>
+                                        </td>
+                                        <td class="py-4 px-2 font-semibold">$0.45</td>
+                                        <td class="py-4 px-2 text-gray-600">1.5 hours</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                                        <td class="py-4 px-2 font-mono font-semibold">+1-555-0456</td>
+                                        <td class="py-4 px-2">US</td>
+                                        <td class="py-4 px-2">Instagram</td>
+                                        <td class="py-4 px-2">
+                                            <span class="status-badge active px-3 py-1 rounded-lg text-sm font-medium">Active</span>
+                                        </td>
+                                        <td class="py-4 px-2 font-semibold">$0.50</td>
+                                        <td class="py-4 px-2 text-gray-600">3 hours</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                                        <td class="py-4 px-2 font-mono font-semibold">+44-20-7946</td>
+                                        <td class="py-4 px-2">GB</td>
+                                        <td class="py-4 px-2">Telegram</td>
+                                        <td class="py-4 px-2">
+                                            <span class="status-badge completed px-3 py-1 rounded-lg text-sm font-medium">Completed</span>
+                                        </td>
+                                        <td class="py-4 px-2 font-semibold">$0.55</td>
+                                        <td class="py-4 px-2 text-gray-600">Expired</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Country and service data
+    const countries = {
+        'US': { name: 'United States', flag: '🇺🇸', stock: 1247, price: '$0.50', code: '1' },
+        'DE': { name: 'Germany', flag: '🇩🇪', stock: 892, price: '$0.45', code: '49' },
+        'GB': { name: 'United Kingdom', flag: '🇬🇧', stock: 654, price: '$0.55', code: '44' },
+        'OTHER': { name: 'Other Countries', flag: '🌍', stock: 2156, price: 'Various', code: '1' }
+    };
+    
+    const services = {
+        'whatsapp': { name: 'WhatsApp', available: 2156 },
+        'facebook': { name: 'Facebook', available: 1834 },
+        'instagram': { name: 'Instagram', available: 1672 },
+        'telegram': { name: 'Telegram', available: 1245 },
+        'other': { name: 'Other Services', available: 543 }
+    };
+    
+    let selectedCountry = 'US';
+    let selectedService = 'whatsapp';
+    
+    function selectCountry(country) {
+        selectedCountry = country;
+        
+        // Update UI
+        document.querySelectorAll('.country-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-country="${country}"]`).classList.add('active');
+        
+        // Update selection display
+        const countryData = countries[country];
+        document.getElementById('selected-flag').textContent = countryData.flag;
+        document.getElementById('selected-country').textContent = countryData.name;
+        document.getElementById('selected-stock').textContent = countryData.stock.toLocaleString();
+        document.getElementById('selected-price').textContent = countryData.price;
+        document.getElementById('browse-country').textContent = countryData.name;
+        
+        // Update available numbers
+        updateNumbersGrid();
+    }
+    
+    function selectService(service) {
+        selectedService = service;
+        
+        // Update UI
+        document.querySelectorAll('.service-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-service="${service}"]`).classList.add('active');
+        
+        // Update selection display
+        const serviceData = services[service];
+        document.getElementById('selected-service').textContent = serviceData.name;
+        document.getElementById('browse-service').textContent = serviceData.name;
+        
+        // Update available numbers
+        updateNumbersGrid();
+    }
+    
+    function updateNumbersGrid() {
+        const grid = document.getElementById('numbers-grid');
+        const countryData = countries[selectedCountry];
+        const serviceData = services[selectedService];
+        
+        let html = '';
+        for (let i = 0; i < 6; i++) {
+            const number = `+${countryData.code}-555-${String(1000 + i).padStart(4, '0')}`;
+            html += `
+                <div class="number-card p-6 border border-gray-200 rounded-2xl transition-all duration-300 cursor-pointer group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="font-mono text-lg font-bold text-gray-900">${number}</div>
+                            <div class="text-gray-600">${countryData.name} • ${serviceData.name}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xl font-bold premium-text">${countryData.price}</div>
+                            <button class="premium-button mt-3 opacity-0 group-hover:opacity-100 transition-opacity text-sm py-2 px-4" onclick="rentSpecificNumber('${number}')">
+                                Rent Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        grid.innerHTML = html;
+    }
+    
+    function switchTab(tab) {
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.closest('.tab-btn').classList.add('active');
+        
+        // Update tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(tab + '-tab').classList.add('active');
+    }
+    
+    function rentNumber() {
+        const countryData = countries[selectedCountry];
+        const serviceData = services[selectedService];
+        alert(`Renting ${serviceData.name} number in ${countryData.name} for ${countryData.price}`);
+    }
+    
+    function rentSpecificNumber(number) {
+        const countryData = countries[selectedCountry];
+        const serviceData = services[selectedService];
+        alert(`Renting number ${number} for ${serviceData.name} service at ${countryData.price}`);
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        updateNumbersGrid();
+    });
+</script>
+{% endblock %}

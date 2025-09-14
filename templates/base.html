@@ -1,0 +1,497 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'images/icon.png' %}">
+    <title>CodeFuse - Global SMS Verification Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=SF+Pro+Display:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #3a84f3 100%);
+            --surface-glass: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b7280;
+            --border-subtle: rgba(255, 255, 255, 0.18);
+            --shadow-elegant: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+        
+        * { 
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, -apple-system, sans-serif;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body {
+            background: linear-gradient(180deg, #fafafa 0%, #f8fafc 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .premium-gradient {
+            background: var(--primary-gradient);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .premium-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            pointer-events: none;
+        }
+        
+        .glass-surface {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: var(--surface-glass);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-elegant);
+        }
+        
+        .premium-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .elegant-hover {
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .elegant-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            /* Fix for iPhone Safari */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            will-change: transform;
+        }
+        
+        .logo-image {
+            width: auto;
+            height: 40px;
+            max-height: 40px;
+            object-fit: contain;
+            /* iPhone Safari specific fixes */
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .animate-float {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .nav-link {
+            position: relative;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: -0.01em;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -6px;
+            left: 50%;
+            background: var(--primary-gradient);
+            transition: all 0.3s ease;
+            border-radius: 1px;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        
+        .premium-button {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: -0.01em;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .premium-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .premium-button:hover::before {
+            left: 100%;
+        }
+        
+        .premium-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        }
+        
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        .mobile-nav-link {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 18px;
+            letter-spacing: -0.01em;
+            transition: color 0.3s ease;
+        }
+        
+        .mobile-nav-link:hover {
+            color: var(--text-primary);
+        }
+        
+        .trust-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .trust-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .trust-badge:hover::before {
+            left: 100%;
+        }
+        
+        .stats-counter {
+            background: var(--primary-gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-counter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+        }
+        
+        .country-flag {
+            width: 32px;
+            height: 22px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            display: inline-block;
+            margin-right: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        .text-shadow {
+            text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        
+        /* iPhone Safari specific optimizations */
+        @supports (-webkit-appearance: none) {
+            .logo-image {
+                -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+            }
+            
+            .glass-surface {
+                -webkit-backdrop-filter: blur(20px);
+                backdrop-filter: blur(20px);
+            }
+        }
+        
+        /* Improved mobile responsiveness */
+        @media (max-width: 768px) {
+            .logo-container {
+                height: 36px;
+            }
+            
+            .logo-image {
+                height: 36px;
+                max-height: 36px;
+            }
+            
+            .nav-link {
+                font-size: 16px;
+            }
+            
+            .premium-button {
+                padding: 10px 24px;
+                font-size: 14px;
+            }
+        }
+        
+        /* High DPI display optimizations */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .logo-image {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 glass-surface">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+            <div class="flex justify-between items-center h-20">
+                <div class="logo-container animate-fade-in">
+                    <a href="/" class="logo-container">
+                        <img src="{% static 'images/logo.png' %}" class="logo-image" alt="CodeFuse Logo">
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-10">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/#features" class="nav-link">Features</a>
+        
+{% if user.is_authenticated %}
+    <a href="/wallet" class="nav-link">Wallet</a>
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="/logout" class="nav-link">Logout</a>
+    <a href="/profile" class="nav-link">Profile</a>
+    <a href="/orders" class="nav-link">Orders</a>
+{% else %}
+    <a href="/login" class="nav-link">Login</a>
+    <a href="/signup" class="premium-button">Get Started</a>
+{% endif %}
+
+                </nav>
+
+                <button class="md:hidden p-3 rounded-xl hover:bg-white/50 transition-all" onclick="toggleMobileMenu()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-full h-full z-50 md:hidden">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-12">
+                <span class="text-2xl font-bold premium-text">Menu</span>
+                <button onclick="toggleMobileMenu()" class="p-3 rounded-xl hover:bg-white/50 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <nav class="space-y-7">
+                <a href="/" class="nav-link">Home</a>
+                <a href="#features" class="block mobile-nav-link">Features</a>
+                <a href="/pricing" class="block mobile-nav-link">Pricing</a>
+
+
+                {% if user.is_authenticated %}
+                    <a href="wallet" class="block mobile-nav-link">Wallet</a>
+                    <a href="dashboard" class="block mobile-nav-link">Dashboard</a>
+                    <a href="/logout" class="block mobile-nav-link">Logout</a>
+                    <a href="profile" class="block mobile-nav-link">Profile</a>
+                    <a href="/orders" class="block mobile-nav-link">Orders</a>
+                    <a href="/dashboard" class="block mobile-nav-link">Dashboard</a>
+                    <a href="/logout" class="block mobile-nav-link">Logout</a>
+                {% else %}
+                    <a href="/login" class="block mobile-nav-link">Login</a>
+                    <a href="/signup" class="premium-button block text-center mt-6">Get Started</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="premium-gradient text-white py-16 px-6 sm:px-8 lg:px-10 relative">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid md:grid-cols-4 gap-10">
+                <!-- Brand -->
+                <div class="animate-fade-in">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                        </div>
+                        <span class="text-2xl font-bold text-shadow">CodeFuse</span>
+                    </div>
+                    <p class="text-white/80 text-sm leading-relaxed">Global SMS verification platform trusted by millions. Secure, fast, and reliable messaging solutions for the modern world.</p>
+                </div>
+                
+                <!-- Links -->
+                <div class="animate-fade-in">
+                    <h4 class="text-lg font-semibold mb-6 text-shadow">Quick Links</h4>
+                    <ul class="space-y-3 text-white/80 text-sm">
+                        <li><a href="#features" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">Features</a></li>
+                        <li><a href="#pricing" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">Pricing</a></li>
+                        <li><a href="#wallet" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">Wallet</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">API</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">Support</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support -->
+                <div class="animate-fade-in">
+                    <h4 class="text-lg font-semibold mb-6 text-shadow">Support</h4>
+                    <ul class="space-y-3 text-white/80 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors hover:translate-x-1 inline-block transition-transform">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div class="animate-fade-in">
+                    <h4 class="text-lg font-semibold mb-6 text-shadow">Contact</h4>
+                    <div class="space-y-3 text-white/80 text-sm">
+                        <p class="hover:text-white transition-colors">Email: support@codefuse.com</p>
+                        <p class="hover:text-white transition-colors">Phone: +1 (800) 123-4567</p>
+                    </div>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center hover:bg-white/30 transition-all hover:scale-105 backdrop-blur-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.708.87 3.215 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center hover:bg-white/30 transition-all hover:scale-105 backdrop-blur-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-16 pt-8 border-t border-white/20 text-center text-white/60 text-sm">
+                <p>&copy; 2025 CodeFuse. All rights reserved. Crafted with precision for the modern world.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('open');
+        }
+        
+        // Add smooth animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = Math.random() * 0.3 + 's';
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('footer > div > div > div').forEach(el => {
+                observer.observe(el);
+            });
+        });
+        
+        // Add click effect to buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('premium-button')) {
+                e.target.style.transform = 'scale(0.98) translateY(-1px)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 150);
+            }
+        });
+        
+        // iPhone Safari logo rendering fix
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            document.addEventListener('DOMContentLoaded', function() {
+                const logoImages = document.querySelectorAll('.logo-image');
+                logoImages.forEach(img => {
+                    img.style.imageRendering = 'crisp-edges';
+                    img.style.imageRendering = '-webkit-optimize-contrast';
+                });
+            });
+        }
+    </script>
+</body>
+</html>

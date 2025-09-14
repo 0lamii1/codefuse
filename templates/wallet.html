@@ -1,0 +1,648 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .floating-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .wallet-container {
+        min-height: 100vh;
+        padding-top: 120px;
+        padding-bottom: 80px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+    }
+
+
+    .wallet-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .wallet-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .wallet-subtitle {
+        font-size: 1.2rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .wallet-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    @media (max-width: 768px) {
+        .wallet-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .balance-card {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+        padding: 40px;
+        border-radius: 24px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .balance-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    }
+
+    .balance-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 30px 80px rgba(102, 126, 234, 0.4);
+    }
+
+    .balance-label {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .balance-amount {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .balance-update {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        position: relative;
+        z-index: 2;
+    }
+
+    .actions-card {
+        backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        border-radius: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .actions-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-btn {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+        color: white;
+        border: none;
+        padding: 16px 24px;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .action-btn:hover::before {
+        left: 100%;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .action-btn.secondary {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .blind-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+    }
+
+    .toggle-label {
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .toggle-switch {
+        width: 50px;
+        height: 26px;
+        background: #d1d5db;
+        border-radius: 13px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .toggle-switch::before {
+        content: '';
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: white;
+        top: 2px;
+        left: 2px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-switch.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .toggle-switch.active::before {
+        transform: translateX(24px);
+    }
+
+    .transactions-section {
+        backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        border-radius: 24px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .transactions-section:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+    }
+
+    .transactions-header {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .transaction-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .transaction-table th {
+        text-align: left;
+        padding: 16px 0;
+        border-bottom: 2px solid #e5e7eb;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .transaction-row {
+        transition: all 0.3s ease;
+    }
+
+    .transaction-row:hover {
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    .transaction-row td {
+        padding: 20px 0;
+        border-bottom: 1px solid #f3f4f6;
+        font-weight: 500;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .status-completed {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+        transform: scale(0.9);
+        transition: all 0.3s ease;
+    }
+
+    .modal.active .modal-content {
+        transform: scale(1);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #9ca3af;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close-btn:hover {
+        color: #374151;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .notification {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        transform: translateX(400px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1001;
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+</style>
+
+<div class="floating-particles" id="particles"></div>
+
+<div class="wallet-container">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 lg:px-10">
+
+
+        <div class="wallet-grid">
+            <div class="balance-card animate-fade-in hover-lift" id="balanceCard">
+                <div class="balance-label">Wallet Balance</div>
+                <div class="balance-amount" id="balanceAmount">₦{{ wallet.balance }}</div>
+                <div class="balance-update">Updated {{ wallet.updated_at|timesince }} ago</div>
+            </div>
+
+            <div class="actions-card animate-fade-in hover-lift">
+                <button class="action-btn" id="fundBtn">
+                    <span></span>
+                    Fund Wallet
+                </button>
+                <div class="blind-toggle">
+                    <span class="toggle-label">Blind Mode</span>
+                    <div class="toggle-switch" id="blindToggle"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full max-w-5xl mx-auto p-4 bg-white rounded-lg shadow-md animate-fade-in hover:shadow-lg transition-shadow">
+        <div class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Transaction History</div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto text-sm text-left text-gray-600">
+            <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                <tr>
+                <th class="px-4 py-2">Amount</th>
+                <th class="px-4 py-2">Status</th>
+                <th class="px-4 py-2">Reference</th>
+                <th class="px-4 py-2">Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if transactions %}
+                {% for transaction in transactions %}
+                <tr class="border-b hover:bg-gray-50 transition">
+                    <td class="px-4 py-2 font-semibold text-gray-800">₦{{ transaction.amount|floatformat:2 }}</td>
+                    <td class="px-4 py-2">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                        {% if transaction.status == 'COMPLETED' %}bg-green-100 text-green-700
+                        {% elif transaction.status == 'FAILED' %}bg-red-100 text-red-700
+                        {% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                        {{ transaction.status|title }}
+                    </span>
+                    </td>
+                    <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.reference }}</td>
+                    <td class="px-4 py-2 text-gray-500">{{ transaction.created_at|date:"M d, Y H:i A" }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="4" class="px-4 py-6 text-center text-gray-500">No transactions found.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+            </table>
+        </div>
+        </div>
+
+            </div>
+        </div>
+
+<!-- Fund Wallet Modal -->
+<div class="modal" id="fundModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Fund Your Wallet</h3>
+            <button class="close-btn" id="closeModal">&times;</button>
+        </div>
+        <form id="fundForm">
+            <div class="form-group">
+                <label class="form-label">Amount (NGN)</label>
+                <input type="number" class="form-input" id="amountInput" placeholder="Enter amount (min ₦100)" min="100"
+                    step="100" required>
+            </div>
+            <button type="submit" class="action-btn" style="width: 100%;">
+                <span id="submitIcon">💳</span>
+                <span id="submitText">Fund Wallet</span>
+            </button>
+        </form>
+        <p style="color: #64748b; font-size: 0.9rem; margin-top: 1rem; text-align: center;">
+            Minimum deposit: ₦100. Funds are processed instantly.
+        </p>
+    </div>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+    Wallet funded successfully! 🎉
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    // Floating particles background
+    const particlesContainer = document.getElementById('particles');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    particlesContainer.appendChild(renderer.domElement);
+
+    // Create particles
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+    for (let i = 0; i < 80; i++) {
+        vertices.push(
+            Math.random() * 2000 - 1000,
+            Math.random() * 2000 - 1000,
+            Math.random() * 2000 - 1000
+        );
+    }
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+    const material = new THREE.PointsMaterial({
+        color: 0x667eea,
+        size: 2,
+        transparent: true,
+        opacity: 0.4
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+    camera.position.z = 1000;
+
+    function animateParticles() {
+        requestAnimationFrame(animateParticles);
+        particles.rotation.x += 0.0005;
+        particles.rotation.y += 0.001;
+        renderer.render(scene, camera);
+    }
+    animateParticles();
+
+    // Modal functionality
+    const fundBtn = document.getElementById('fundBtn');
+    const fundModal = document.getElementById('fundModal');
+    const closeModal = document.getElementById('closeModal');
+    const fundForm = document.getElementById('fundForm');
+    const notification = document.getElementById('notification');
+
+    fundBtn.addEventListener('click', () => {
+        fundModal.classList.add('active');
+    });
+
+    closeModal.addEventListener('click', () => {
+        fundModal.classList.remove('active');
+    });
+
+    fundModal.addEventListener('click', (e) => {
+        if (e.target === fundModal) {
+            fundModal.classList.remove('active');
+        }
+    });
+
+    // Form submission
+    fundForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitIcon = document.getElementById('submitIcon');
+        const submitText = document.getElementById('submitText');
+        const amount = document.getElementById('amountInput').value;
+
+        submitIcon.textContent = '⏳';
+        submitText.textContent = 'Processing...';
+
+        try {
+            const response = await fetch('/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()  // CSRF protection if required
+                },
+                body: JSON.stringify({ amount })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Redirect to Paystack authorization URL
+                window.location.href = data.authorization_url;
+            } else {
+                alert(data.message || 'An error occurred while processing your payment.');
+            }
+        } catch (error) {
+            alert('Failed to initiate payment. Please try again.');
+            console.error(error);
+        } finally {
+            submitIcon.textContent = '💳';
+            submitText.textContent = 'Fund Wallet';
+        }
+    });
+
+    function getCSRFToken() {
+        const name = 'csrftoken';
+        const cookieValue = document.cookie.split('; ')
+            .find(row => row.startsWith(name + '='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+    // Blind mode toggle
+    const blindToggle = document.getElementById('blindToggle');
+    const balanceAmount = document.getElementById('balanceAmount');
+    const balanceCard = document.getElementById('balanceCard');
+    let isBlindMode = false;
+    let originalBalance = balanceAmount.textContent;
+
+    blindToggle.addEventListener('click', () => {
+        isBlindMode = !isBlindMode;
+        blindToggle.classList.toggle('active', isBlindMode);
+
+        if (isBlindMode) {
+            originalBalance = balanceAmount.textContent;
+            balanceAmount.textContent = '****';
+            balanceCard.style.filter = 'blur(2px)';
+        } else {
+            balanceAmount.textContent = originalBalance;
+            balanceCard.style.filter = 'none';
+        }
+    });
+
+    // Resize handler for particles
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Add hover effects to transaction rows
+    document.querySelectorAll('.transaction-row').forEach(row => {
+        row.addEventListener('mouseenter', () => {
+            row.style.transform = 'scale(1.01)';
+        });
+
+        row.addEventListener('mouseleave', () => {
+            row.style.transform = 'scale(1)';
+        });
+    });
+
+    // Add smooth animations on scroll
+    document.addEventListener('DOMContentLoaded', function () {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = (index * 0.1) + 's';
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.wallet-header, .balance-card, .actions-card, .transactions-section').forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
+{% endblock %}
