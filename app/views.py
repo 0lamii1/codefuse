@@ -116,7 +116,9 @@ def fund_wallet(request):
             user=request.user,
             amount=amount,
             reference=initiate["reference"],
-            type="CREDIT"
+            type="CREDIT",
+            previous_balance=wallet.balance,
+            new_balance=amount
         )
 
         return Response({
