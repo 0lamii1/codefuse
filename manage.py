@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 import os
 import sys
+from server.settings.base import DEBUG  # use the DEBUG value in base.py
 
 def main():
-    # Load DEBUG_SECRET safely from env without importing settings prematurely
-    from config.env import DEBUG_SECRET  
-
-    if DEBUG_SECRET:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings.local")
+    # Force settings module
+    if DEBUG:
+        os.environ["DJANGO_SETTINGS_MODULE"] = "server.settings.local"
     else:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings.production")
+        os.environ["DJANGO_SETTINGS_MODULE"] = "server.settings.production"
 
     try:
         from django.core.management import execute_from_command_line

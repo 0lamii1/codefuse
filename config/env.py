@@ -8,6 +8,5 @@ PAYSTACK_KEY = str(os.getenv('PAYSTACK_KEY'))
 
 DAISYSMS_API_KEY = str(os.getenv('DAISYSMS_API_KEY'))
 
-DEBUG_SECRET = os.getenv("DEBUG_SECRET", "True").lower() in ("true", "1", "yes")
 PRODUCTION_KEY = str(os.getenv('PRODUCTION_KEY'))
 LOCAL_KEY = str(os.getenv('LOCAL_KEY'))

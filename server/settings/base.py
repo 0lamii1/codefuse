@@ -1,5 +1,5 @@
 from pathlib import Path
-from config.env import DEBUG_SECRET
+from config.env import PRODUCTION_KEY
 
 from django.templatetags.static import static
 from django.urls import reverse_lazy
@@ -7,10 +7,32 @@ from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = DEBUG_SECRET
+DEBUG = False
 
+SECRET_KEY = PRODUCTION_KEY 
+
+INSTALLED_APPS = [
+    "unfold.contrib.import_export",
+    "import_export",
+    'unfold',
+
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'rest_framework',
+
+    'user',
+    'app',
+    
+]
 
 ROOT_URLCONF = 'server.urls'
+
+
 
 TEMPLATES = [
     {
@@ -27,9 +49,32 @@ TEMPLATES = [
     },
 ]
 
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+
+
 WSGI_APPLICATION = 'server.wsgi.application'
 
 AUTH_USER_MODEL = "user.User"
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'database.db',
+    }
+}
+
 
 AUTHENTICATION_BACKENDS = [
     "user.backends.CustomBackend",             
@@ -50,7 +95,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 
 
