@@ -27,7 +27,7 @@ def verify_paystack_transaction(reference: str):
         conn.close()
 
         if data.get('status') and data['data']['status'] == "success":
-            Transaction(status='success', reference=reference)
+            update_wallet_transaction(status='success', reference=reference)
             return {
                 'success': True,
                 'message': 'Payment verified successfully.',
