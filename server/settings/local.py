@@ -1,6 +1,6 @@
 from .base import *
 
-ALLOWED_HOSTS = ['codefuse.sevalla.app']
+
 
 
 CSRF_TRUSTED_ORIGINS = [
