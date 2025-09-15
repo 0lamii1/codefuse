@@ -13,6 +13,8 @@ SECRET_KEY = PRODUCTION_KEY
 
 ALLOWED_HOSTS = ['codefuse.sevalla.app', 'localhost']
 
+# ALLOWED_HOSTS = []
+
 INSTALLED_APPS = [
     "unfold.contrib.import_export",
     "import_export",

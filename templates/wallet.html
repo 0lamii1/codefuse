@@ -20,7 +20,6 @@
         position: relative;
     }
 
-
     .wallet-header {
         text-align: center;
         margin-bottom: 60px;
@@ -234,6 +233,7 @@
         gap: 12px;
     }
 
+    /* Desktop transaction table */
     .transaction-table {
         width: 100%;
         border-collapse: collapse;
@@ -261,6 +261,118 @@
         font-weight: 500;
     }
 
+    /* Mobile transaction cards */
+    .mobile-transaction-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f3f4f6;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-transaction-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .mobile-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .mobile-amount {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .mobile-type {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+        text-transform: capitalize;
+    }
+
+    .mobile-status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .view-more-btn {
+        background: none;
+        border: none;
+        color: #3b82f6;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .view-more-btn:hover {
+        background: #f3f4f6;
+        color: #1e40af;
+    }
+
+    .view-more-icon {
+        transition: transform 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .view-more-btn.expanded .view-more-icon {
+        transform: rotate(180deg);
+    }
+
+    .mobile-details {
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-top: 0;
+    }
+
+    .mobile-details.expanded {
+        max-height: 300px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #f3f4f6;
+    }
+
+    .mobile-detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f9fafb;
+    }
+
+    .mobile-detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-detail-label {
+        font-weight: 500;
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .mobile-detail-value {
+        font-weight: 500;
+        color: #1f2937;
+        font-size: 0.875rem;
+        text-align: right;
+        max-width: 60%;
+        word-break: break-all;
+    }
+
     .status-badge {
         padding: 6px 12px;
         border-radius: 20px;
@@ -276,6 +388,39 @@
     .status-pending {
         background: #fef3c7;
         color: #92400e;
+    }
+
+    .status-failed {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Hide mobile cards on desktop */
+    .mobile-transactions {
+        display: none;
+    }
+
+    /* Show mobile cards and hide desktop table on mobile */
+    @media (max-width: 768px) {
+        .desktop-transactions {
+            display: none;
+        }
+        
+        .mobile-transactions {
+            display: block;
+        }
+
+        .wallet-title {
+            font-size: 2.5rem;
+        }
+
+        .balance-amount {
+            font-size: 2.2rem;
+        }
+
+        .balance-card, .actions-card, .transactions-section {
+            padding: 24px;
+        }
     }
 
     .modal {
@@ -391,7 +536,6 @@
 <div class="wallet-container">
     <div class="max-w-6xl mx-auto px-6 sm:px-8 lg:px-10">
 
-
         <div class="wallet-grid">
             <div class="balance-card animate-fade-in hover-lift" id="balanceCard">
                 <div class="balance-label">Wallet Balance</div>
@@ -411,56 +555,118 @@
             </div>
         </div>
 
-        <div class="w-full max-w-5xl mx-auto p-4 bg-white rounded-lg shadow-md animate-fade-in hover:shadow-lg transition-shadow">
-        <div class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Transaction History</div>
+        <!-- Desktop Transaction Table -->
+        <div class="desktop-transactions w-full max-w-5xl mx-auto p-4 bg-white rounded-lg shadow-md animate-fade-in hover:shadow-lg transition-shadow">
+            <div class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Transaction History</div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full table-auto text-sm text-left text-gray-600">
-            <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
-                <tr>
-                <th class="px-4 py-2">Amount</th>
-                <th class="px-4 py-2">Status</th>
-                <th class="px-4 py-2">Reference</th>
-                <th class="px-4 py-2">Rcpt ID</th>
-                <th class="px-4 py-2">Time</th>
-                <th class="px-4 py-2">Type</th>
-                <th class="px-4 py-2">Prev Bal</th>
-                <th class="px-4 py-2">New balance</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if transactions %}
-                {% for transaction in transactions %}
-                <tr class="border-b hover:bg-gray-50 transition">
-                    <td class="px-4 py-2 font-semibold text-gray-800">₦{{ transaction.amount|floatformat:2 }}</td>
-                    <td class="px-4 py-2">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full 
-                        {% if transaction.status == 'COMPLETED' %}bg-green-100 text-green-700
-                        {% elif transaction.status == 'FAILED' %}bg-red-100 text-red-700
-                        {% else %}bg-yellow-100 text-yellow-700{% endif %}">
-                        {{ transaction.status|title }}
-                    </span>
-                    </td>
-                    <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.reference }}</td>
-                    <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.receipt_id }}</td>
-                    <td class="px-4 py-2 text-gray-500">{{ transaction.created_at|date:"M d, Y H:i A" }}</td>
-                    <td class="px-4 py-2 text-gray-500">{{ transaction.type }}</td>
-                    <td class="px-4 py-2 text-gray-500">₦{{ transaction.previous_balance }}</td>
-                    <td class="px-4 py-2 text-gray-500">₦{{ transaction.new_balance }}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="4" class="px-4 py-6 text-center text-gray-500">No transactions found.</td>
-                </tr>
-                {% endif %}
-            </tbody>
-            </table>
-        </div>
-        </div>
-
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto text-sm text-left text-gray-600">
+                    <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                        <tr>
+                            <th class="px-4 py-2">Amount</th>
+                            <th class="px-4 py-2">Status</th>
+                            <th class="px-4 py-2">Reference</th>
+                            <th class="px-4 py-2">Rcpt ID</th>
+                            <th class="px-4 py-2">Time</th>
+                            <th class="px-4 py-2">Type</th>
+                            <th class="px-4 py-2">Prev Bal</th>
+                            <th class="px-4 py-2">New balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if transactions %}
+                        {% for transaction in transactions %}
+                        <tr class="border-b hover:bg-gray-50 transition">
+                            <td class="px-4 py-2 font-semibold text-gray-800">₦{{ transaction.amount|floatformat:2 }}</td>
+                            <td class="px-4 py-2">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                    {% if transaction.status == 'COMPLETED' %}bg-green-100 text-green-700
+                                    {% elif transaction.status == 'FAILED' %}bg-red-100 text-red-700
+                                    {% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                                    {{ transaction.status|title }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.reference }}</td>
+                            <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.receipt_id }}</td>
+                            <td class="px-4 py-2 text-gray-500">{{ transaction.created_at|date:"M d, Y H:i A" }}</td>
+                            <td class="px-4 py-2 text-gray-500">{{ transaction.type }}</td>
+                            <td class="px-4 py-2 text-gray-500">₦{{ transaction.previous_balance }}</td>
+                            <td class="px-4 py-2 text-gray-500">₦{{ transaction.new_balance }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="px-4 py-6 text-center text-gray-500">No transactions found.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
             </div>
         </div>
+
+        <!-- Mobile Transaction Cards -->
+        <div class="mobile-transactions">
+            <div class="transactions-section">
+                <div class="transactions-header">
+                    Transaction History
+                </div>
+                
+                {% if transactions %}
+                {% for transaction in transactions %}
+                <div class="mobile-transaction-card">
+                    <div class="mobile-card-header">
+                        <div class="mobile-amount">₦{{ transaction.amount|floatformat:2 }}</div>
+                        <div class="mobile-type">{{ transaction.type }}</div>
+                    </div>
+                    
+                    <div class="mobile-status-row">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full status-badge
+                            {% if transaction.status == 'COMPLETED' %}status-completed
+                            {% elif transaction.status == 'FAILED' %}status-failed
+                            {% else %}status-pending{% endif %}">
+                            {{ transaction.status|title }}
+                        </span>
+                        
+                        <button class="view-more-btn" onclick="toggleDetails(this)">
+                            <span>View More</span>
+                            <span class="view-more-icon">▼</span>
+                        </button>
+                    </div>
+                    
+                    <div class="mobile-details">
+                        <div class="mobile-detail-row">
+                            <span class="mobile-detail-label">Reference</span>
+                            <span class="mobile-detail-value">{{ transaction.reference }}</span>
+                        </div>
+                        <div class="mobile-detail-row">
+                            <span class="mobile-detail-label">Receipt ID</span>
+                            <span class="mobile-detail-value">{{ transaction.receipt_id }}</span>
+                        </div>
+                        <div class="mobile-detail-row">
+                            <span class="mobile-detail-label">Date & Time</span>
+                            <span class="mobile-detail-value">{{ transaction.created_at|date:"M d, Y H:i A" }}</span>
+                        </div>
+                        <div class="mobile-detail-row">
+                            <span class="mobile-detail-label">Previous Balance</span>
+                            <span class="mobile-detail-value">₦{{ transaction.previous_balance }}</span>
+                        </div>
+                        <div class="mobile-detail-row">
+                            <span class="mobile-detail-label">New Balance</span>
+                            <span class="mobile-detail-value">₦{{ transaction.new_balance }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center text-gray-500 py-8">
+                    No transactions found.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <!-- Fund Wallet Modal -->
 <div class="modal" id="fundModal">
@@ -493,6 +699,24 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
+    // Toggle mobile transaction details
+    function toggleDetails(button) {
+        const card = button.closest('.mobile-transaction-card');
+        const details = card.querySelector('.mobile-details');
+        const icon = button.querySelector('.view-more-icon');
+        const text = button.querySelector('span:first-child');
+        
+        if (details.classList.contains('expanded')) {
+            details.classList.remove('expanded');
+            button.classList.remove('expanded');
+            text.textContent = 'View More';
+        } else {
+            details.classList.add('expanded');
+            button.classList.add('expanded');
+            text.textContent = 'View Less';
+        }
+    }
+
     // Floating particles background
     const particlesContainer = document.getElementById('particles');
     const scene = new THREE.Scene();
@@ -569,7 +793,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken()  // CSRF protection if required
+                    'X-CSRFToken': getCSRFToken()
                 },
                 body: JSON.stringify({ amount })
             });
@@ -577,7 +801,6 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // Redirect to Paystack authorization URL
                 window.location.href = data.authorization_url;
             } else {
                 alert(data.message || 'An error occurred while processing your payment.');
@@ -598,6 +821,7 @@
             ?.split('=')[1];
         return cookieValue || '';
     }
+
     // Blind mode toggle
     const blindToggle = document.getElementById('blindToggle');
     const balanceAmount = document.getElementById('balanceAmount');
@@ -626,7 +850,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Add hover effects to transaction rows
+    // Add hover effects to transaction rows (desktop)
     document.querySelectorAll('.transaction-row').forEach(row => {
         row.addEventListener('mouseenter', () => {
             row.style.transform = 'scale(1.01)';
@@ -637,20 +861,5 @@
         });
     });
 
-    // Add smooth animations on scroll
-    document.addEventListener('DOMContentLoaded', function () {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationDelay = (index * 0.1) + 's';
-                    entry.target.classList.add('animate-fade-in');
-                }
-            });
-        });
-
-        document.querySelectorAll('.wallet-header, .balance-card, .actions-card, .transactions-section').forEach(el => {
-            observer.observe(el);
-        });
-    });
 </script>
-{% endblock %}
+{% endblock%} 
