@@ -32,6 +32,10 @@ INSTALLED_APPS = [
     
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://codefuse.sevalla.app',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
