@@ -421,6 +421,7 @@
                 <th class="px-4 py-2">Amount</th>
                 <th class="px-4 py-2">Status</th>
                 <th class="px-4 py-2">Reference</th>
+                <th class="px-4 py-2">Rcpt ID</th>
                 <th class="px-4 py-2">Time</th>
                 <th class="px-4 py-2">Type</th>
                 <th class="px-4 py-2">Prev Bal</th>
@@ -441,6 +442,7 @@
                     </span>
                     </td>
                     <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.reference }}</td>
+                    <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.receipt_id }}</td>
                     <td class="px-4 py-2 text-gray-500">{{ transaction.created_at|date:"M d, Y H:i A" }}</td>
                     <td class="px-4 py-2 text-gray-500">{{ transaction.type }}</td>
                     <td class="px-4 py-2 text-gray-500">₦{{ transaction.previous_balance }}</td>
