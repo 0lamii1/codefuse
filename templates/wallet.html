@@ -422,6 +422,8 @@
                 <th class="px-4 py-2">Status</th>
                 <th class="px-4 py-2">Reference</th>
                 <th class="px-4 py-2">Time</th>
+                <th class="px-4 py-2">Prev Bal</th>
+                <th class="px-4 py-2">New balance</th>
                 </tr>
             </thead>
             <tbody>
@@ -439,6 +441,8 @@
                     </td>
                     <td class="px-4 py-2 text-xs font-mono break-all">{{ transaction.reference }}</td>
                     <td class="px-4 py-2 text-gray-500">{{ transaction.created_at|date:"M d, Y H:i A" }}</td>
+                    <td class="px-4 py-2 text-gray-500">₦{{ transaction.previous_balance }}</td>
+                    <td class="px-4 py-2 text-gray-500">₦{{ transaction.new_balance }}</td>
                 </tr>
                 {% endfor %}
                 {% else %}
