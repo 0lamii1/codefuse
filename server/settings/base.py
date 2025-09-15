@@ -1,5 +1,5 @@
 from pathlib import Path
-from config.env import PRODUCTION_KEY
+from config.env import PRODUCTION_KEY, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
 
 from django.templatetags.static import static
 from django.urls import reverse_lazy
@@ -11,7 +11,7 @@ DEBUG = True
 
 SECRET_KEY = PRODUCTION_KEY 
 
-ALLOWED_HOSTS = ['codefuse.sevalla.app']
+ALLOWED_HOSTS = ['codefuse.sevalla.app', 'localhost']
 
 INSTALLED_APPS = [
     "unfold.contrib.import_export",
@@ -34,7 +34,20 @@ INSTALLED_APPS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://codefuse.sevalla.app',
+    'http://localhost:8080'
 ]
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": DB_NAME,
+        "USER": DB_USER,
+        "PASSWORD": DB_PASSWORD,
+        "HOST": DB_HOST,
+        "PORT": DB_PORT,
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -76,12 +89,6 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 AUTH_USER_MODEL = "user.User"
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'database.db',
-    }
-}
 
 
 AUTHENTICATION_BACKENDS = [
