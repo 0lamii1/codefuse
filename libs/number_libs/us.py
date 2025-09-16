@@ -1,48 +1,63 @@
 import http.client
 import json
+from typing import List
 from decimal import Decimal, ROUND_HALF_UP
 from django.http import JsonResponse
 from config.env import DAISYSMS_API_KEY
+from urllib.parse import urlencode
 
-def getnumber(request, service: str, amount: int = None):
+
+def getnumber(request, service: str):
     """
     Fetch numbers from DaisySMS API.
-    Service is required.
-    Optional: amount, carriers, areas.
+    Required: service
+    Optional: amount, areas (comma separated), carriers
     """
 
-    ser = service.lower()
+    service = service.lower()
 
-    # Default amount if not provided
-    if amount is None:
-        amount = 2400  # Default max amount in your conversion logic
+    # Extract params
+    amount = request.GET.get("amount")
+    carriers = request.GET.get("carriers")  # e.g. "tmo"
+    areas_param = request.GET.get("areas")  # e.g. "201,520"
+    areas = areas_param.split(",") if areas_param else []
 
-    max_price = (amount - 800) / 1600
+    # Calculate max price
+    max_price = None
+    if amount is not None:
+        try:
+            amount = int(amount)
+            max_price = (amount - 800) / 1600
+        except Exception:
+            return JsonResponse({"error": "Invalid amount"}, status=400)
 
-    # Optional query parameters
-    carriers = request.GET.get('carriers')  # e.g., "tmo"
-    areas = request.GET.get('areas')        # e.g., "201,520"
-
-    # Build URL
-    base_url = '/stubs/handler_api.php?'
-    api_param = f'api_key={DAISYSMS_API_KEY}'
-    action = f'&action=getNumber&service={ser}&max_price={max_price}'
-
+    # Build query params exactly as Daisy expects
+    params = {
+        "api_key": DAISYSMS_API_KEY,
+        "action": "getNumber",
+        "service": service,
+    }
+    if max_price is not None:
+        params["max_price"] = f"{max_price:.2f}"  # formatted float string
     if carriers:
-        action += f"&carriers={carriers}"
+        params["carriers"] = carriers
     if areas:
-        action += f"&areas={areas}"
+        params["areas"] = ",".join(areas)
 
-    url = f"{base_url}{api_param}{action}"
+    query = "/stubs/handler_api.php?" + urlencode(params)
+
+    full_url = f"https://daisysms.com{query}"
+
+    # 👇 Print to console (for debugging)
+    print("Constructed DaisySMS URL:", full_url)
 
     conn = http.client.HTTPSConnection("daisysms.com")
-
     try:
-        conn.request("GET", url)
+        conn.request("GET", query)
         response = conn.getresponse()
         raw_data = response.read().decode("utf-8")
 
-        # Handle DaisySMS plain text responses
+        # DaisySMS error responses
         error_responses = {
             "MAX_PRICE_EXCEEDED": "Max price exceeded",
             "NO_NUMBERS": "No numbers available",
@@ -53,26 +68,30 @@ def getnumber(request, service: str, amount: int = None):
         if raw_data in error_responses:
             return JsonResponse({"error": error_responses[raw_data]}, status=400)
 
+        # Try parse JSON response
         try:
             data = json.loads(raw_data)
             structured_data = []
 
             for service_type, items in data.items():
                 for key, item in items.items():
-                    cost = (Decimal(item.get("cost", "0")) * 1600 + 800).quantize(
-                        Decimal('0.01'), rounding=ROUND_HALF_UP
-                    )
-                    ltr_price = (Decimal(item.get("ltrPrice", "0")) * 800).quantize(
-                        Decimal('0.01'), rounding=ROUND_HALF_UP
-                    )
+                    try:
+                        cost = (Decimal(item.get("cost", "0")) * 1600 + 800).quantize(
+                            Decimal("0.01"), rounding=ROUND_HALF_UP
+                        )
+                        ltr_price = (Decimal(item.get("ltrPrice", "0")) * 800).quantize(
+                            Decimal("0.01"), rounding=ROUND_HALF_UP
+                        )
+                    except Exception:
+                        cost, ltr_price = None, None
 
                     structured_data.append({
                         "name": item.get("name"),
                         "count": item.get("count"),
                         "ttl": item.get("ttl"),
-                        "cost": float(cost),
-                        "ltrPrice": float(ltr_price),
-                        "repeatable": item.get("repeatable")
+                        "cost": float(cost) if cost else None,
+                        "ltrPrice": float(ltr_price) if ltr_price else None,
+                        "repeatable": item.get("repeatable"),
                     })
 
             return JsonResponse(structured_data, safe=False)
@@ -85,7 +104,6 @@ def getnumber(request, service: str, amount: int = None):
 
     finally:
         conn.close()
-
 
 
 def getnumber_list(request):

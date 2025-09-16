@@ -78,7 +78,7 @@ def logout_view(request):
 
 def wallet(request):
     wallet, created = Wallet.objects.get_or_create(user=request.user)
-    transactions = Transaction.objects.filter(user=request.user).order_by('-created_at') 
+    transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')[:5]
     return render(request, 'wallet.html', {'transactions': transactions, 'wallet': wallet})
 
 

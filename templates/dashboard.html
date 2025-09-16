@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<!-- Add Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
 <style>
     .country-btn.active {
         border-color: #2563eb;
@@ -12,7 +15,297 @@
         max-height: 200px;
         overflow-y: auto;
     }
+
+    .service-dropdown::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .service-dropdown::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 3px;
+    }
+
+    .service-dropdown::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+
+    /* Modal container - enhanced styling */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 9999; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%; 
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        animation: modalFadeIn 0.3s ease-out;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 1rem;
+        max-width: 28rem;
+        width: 100%;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease-out;
+        transform: translateY(0);
+    }
+
+    /* Modal Header */
+    .modal-header {
+        background: linear-gradient(135deg, #1053b9 0%, #5e84c5 100%);
+        padding: 1.5rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .modal-icon {
+        width: 2rem;
+        height: 2rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.75rem;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Modal Body */
+    .modal-body {
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .modal-success-icon {
+        width: 4rem;
+        height: 4rem;
+        background: #dcfdf4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .modal-message {
+        color: #374151;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    /* Modal Buttons */
+    .modal-buttons {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    /* Close Button */
+    .close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .close:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Enhanced Rent Button */
+    #rentNowBtn {
+        flex: 1;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #rentNowBtn:hover {
+        background: linear-gradient(135deg, #667eea 0%, #3a84f3 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    #rentNowBtn:focus {
+        outline: none;
+        box-shadow: #667eea;
+    }
+
+    #rentNowBtn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Cancel Button */
+    #cancelRentBtn {
+        flex: 1;
+        background: #f3f4f6;
+        color: #374151;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    #cancelRentBtn:hover {
+        background: #e5e7eb;
+    }
+
+    /* Enhanced Proceed Buttons */
+    #rent-us-number, #rent-gem-number, #rent-oth-number {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    #rent-us-number:hover, #rent-gem-number:hover, #rent-oth-number:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    #rent-us-number:disabled, #rent-gem-number:disabled, #rent-oth-number:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Button Loading States */
+    .btn-loading {
+        color: transparent !important;
+        pointer-events: none;
+    }
+
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: -0.625rem;
+        margin-left: -0.625rem;
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        color: white;
+    }
+
+    /* Success Toast */
+    .toast {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10000;
+        background: #10b981;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        display: none;
+        align-items: center;
+        animation: toastSlideIn 0.3s ease-out;
+        min-width: 250px;
+    }
+
+    .toast.show {
+        display: flex;
+    }
+
+    /* Animations */
+    @keyframes modalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes modalSlideIn {
+        from { 
+            opacity: 0;
+            transform: translateY(-1rem);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes toastSlideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* Enhanced glass surface */
+    .glass-surface {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .elegant-hover:hover {
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
 </style>
+
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pt-20">
     <div class="max-w-7xl mx-auto my-8 px-6 pb-8">
@@ -44,28 +337,36 @@
 
                             <!-- US Area Code Dropdown -->
                             <div class="mt-6 relative">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">US Area Code</label>
-                                <input id="us-area-code-search" type="text" placeholder="Search area code e.g 201, 202, 225 ..."
-                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 mb-2">
-                            
+                                <label class="block text-sm font-medium text-gray-700 mb-2">US Area Codes</label>
+                                <div id="area-code-container"
+                                    class="flex flex-wrap items-center gap-2 w-full px-4 py-2 border border-gray-200 rounded-xl focus-within:ring-2 focus-within:ring-blue-500">
+                                    <input id="area-code-input" type="text" placeholder="Type and press Enter..."
+                                        class="flex-1 border-none focus:ring-0 outline-none p-2">
+                                </div>
+                                <input type="hidden" id="area-codes-hidden" name="areas">
                             </div>
 
                             <!-- Filters -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Max Cost (₦)</label>
-                                    <input id="max-cost" type="number" min="0" placeholder="1000" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 
+                                    <input id="us-max-cost" type="number" min="0" placeholder="1000" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 
                 focus:ring-blue-500 focus:border-transparent transition-all 
                 bg-white/80 backdrop-blur-sm">
                                 </div>
                             </div>
 
-                            <!-- Action Button -->
                             <div class="flex justify-between mt-6">
-                                <button id="rent-us-number" class="premium-button">Rent</button>
+                                <button id="rent-us-number" 
+                                class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                                Proceed</button>
+                                <svg id="us-loginSpinner" class="w-5 h-5 hidden animate-spin" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
                             </div>
                         </div>
-
 
                         <!-- Germany Service -->
                         <div class="relative hidden" id="german-service">
@@ -80,14 +381,19 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Max Cost (₦)</label>
-                                    <input id="max-cost" type="number" min="0" placeholder="1000" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 
+                                    <input id="german-max-cost" type="number" min="0" placeholder="1000" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 
                                         focus:ring-blue-500 focus:border-transparent transition-all 
                                         bg-white/80 backdrop-blur-sm">
                                 </div>
                             </div>
                             <!-- Action Button -->
                             <div class="flex justify-between mt-6">
-                                <button id="rent-gem-number" onclick="premium-button">Rent</button>
+                                <button id="rent-gem-number" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">Proceed</button>
+                                <svg id="german-loginSpinner" class="w-5 h-5 hidden animate-spin" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
                             </div>
                         </div>
 
@@ -102,7 +408,12 @@
                             </div>
 
                             <div class="flex justify-between mt-6">
-                                <button id="rent-oth-number" onclick="premium-button">Rent</button>
+                                <button id="rent-oth-number" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">Rent</button>
+                                <svg id="other-loginSpinner" class="w-5 h-5 hidden animate-spin" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -110,8 +421,8 @@
                 </div>
             </div>
         </div>
-                <!-- Rentals Table -->
-        <div class="glass-surface rounded-2xl overflow-hidden elegant-hover mt-12">
+        
+<div class="glass-surface rounded-2xl overflow-hidden elegant-hover mt-12">
             <div class="glass-surface rounded-2xl p-8">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold mb-2">My recent rentals</h2>
@@ -222,89 +533,59 @@
             {% endif %}
         </div>
 
+
     </div>
 </div>
 
-<script>
-    // Country selection
-    document.getElementById("country").addEventListener("change", function () {
-        const value = this.value;
+<!-- Enhanced Modal with existing IDs -->
+<div id="rentModal" class="modal">
+    <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div class="modal-title">
+                <div class="modal-icon">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                Number Ready!
+            </div>
+            <button id="closeModal" class="close">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
 
-        // Hide all first
-        document.getElementById("us-service").classList.add("hidden");
-        document.getElementById("german-service").classList.add("hidden");
-        document.getElementById("other-service").classList.add("hidden");
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <div class="modal-success-icon">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #0f7ae6;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                </svg>
+            </div>
+            <p id="modalMessage" class="modal-message">Your virtual number is ready for use! Click below to complete your rental.</p>
+        </div>
+    </div>
+</div>
 
-        if (value === "us") {
-            document.getElementById("us-service").classList.remove("hidden");
-            populateUSServices();
-            getUSAreaCode(); 
-        }
-        if (value === "germany") {
-            document.getElementById("german-service").classList.remove("hidden");
-            populateGermanServices();
-        }
-        if (value === "other") {
-            document.getElementById("other-service").classList.remove("hidden");
-            populateOtherServices();
-        }
-    });
+<!-- Success Toast -->
+<div id="successToast" class="toast">
+    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 0.75rem;">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+    </svg>
+    <span>Number rented successfully!</span>
+</div>
 
-    // --- US Service Search ---
-    document.getElementById("us-service-search").addEventListener("input", function () {
-        const val = this.value.toLowerCase();
-        const listEl = document.getElementById("us-service-list");
-        listEl.querySelectorAll("button").forEach(btn => {
-            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
-        });
-        listEl.classList.remove("hidden");
-    });
 
-    document.getElementById("us-area-code-search").addEventListener("input", function () {
-        const val = this.value.toLowerCase();
-        const listEl = document.getElementById("us-area-code-list");
-        listEl.querySelectorAll("button").forEach(btn => {
-            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
-        });
-        listEl.classList.remove("hidden");
-    });
 
-    // --- German Service Search ---
-    document.getElementById("german-service-search").addEventListener("input", function () {
-        const val = this.value.toLowerCase();
-        const listEl = document.getElementById("german-service-list");
-        listEl.querySelectorAll("button").forEach(btn => {
-            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
-        });
-        listEl.classList.remove("hidden");
-    });
-
-    // --- Other Service Search ---
-    document.getElementById("other-service-search").addEventListener("input", function () {
-        const val = this.value.toLowerCase();
-        const listEl = document.getElementById("other-service-list");
-        listEl.querySelectorAll("button").forEach(btn => {
-            btn.style.display = btn.textContent.toLowerCase().includes(val) ? "block" : "none";
-        });
-        listEl.classList.remove("hidden");
-    });
-
-    // Close dropdowns when clicking outside
-    document.addEventListener("click", function (e) {
-        ["us-service", "german-service", "other-service"].forEach(serviceId => {
-            const container = document.getElementById(serviceId);
-            if (container && !container.contains(e.target)) {
-                const listEl = container.querySelector(".service-dropdown");
-                if (listEl) listEl.classList.add("hidden");
-            }
-        });
-    });
-</script>
-
-<script src="{% static 'js/dynamic.js' %}"></script>
+<!-- Load scripts in correct order -->
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/areacode.js' %}"></script>
 <script src="{% static 'js/services.js' %}"></script>
 <script src="{% static 'js/us.js' %}"></script>
 <script src="{% static 'js/german.js' %}"></script>
 <script src="{% static 'js/others.js' %}"></script>
 <script src="{% static 'js/rent.js' %}"></script>
+
 {% endblock %}

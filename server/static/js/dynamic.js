@@ -51,3 +51,7 @@ function selectCountry(code, name) {
 
     toggleDropdown('countryList'); // ✅ Close the dropdown after selecting
 }
+
+
+
+

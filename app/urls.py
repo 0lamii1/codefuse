@@ -36,10 +36,5 @@ urlpatterns = [
         'api/services/us/numbers/<service:service>/', 
         getnumber, 
         name='getnumber'
-    ),
-    path(
-        'api/services/us/numbers/<service:service>/<int:amount>/', 
-        getnumber, 
-        name='getnumber_with_amount'
-    ),
+    )
 ]

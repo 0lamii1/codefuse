@@ -8,12 +8,12 @@ from django.utils.translation import gettext_lazy as _
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = True
-
+    
 SECRET_KEY = PRODUCTION_KEY 
 
-ALLOWED_HOSTS = ['codefuse.sevalla.app', 'localhost']
+#ALLOWED_HOSTS = ['codefuse.sevalla.app', 'localhost']
 
-# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "unfold.contrib.import_export",
